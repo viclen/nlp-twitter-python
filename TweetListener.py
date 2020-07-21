@@ -19,7 +19,7 @@ class TweetListener(tweepy.StreamListener):
                     'text': status.text,
                     'profile_image': status.user.profile_image_url,
                     'approved': 0
-                })  
+                })
 
                 print('salvo')
             except AttributeError:

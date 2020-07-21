@@ -11,4 +11,4 @@ def init():
 
     tweetListener = TweetListener()
     tweetStream = tweepy.Stream(auth=auth, listener=tweetListener)
-    tweetStream.filter(track=['covid19'])
+    tweetStream.filter(track=['covid19'], languages=['pt'])
