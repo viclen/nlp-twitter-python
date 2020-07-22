@@ -14,6 +14,7 @@ class TweetListener(tweepy.StreamListener):
                 doc_ref = self.db.collection('tweets').document(status.id_str)
 
                 doc_ref.set({
+                    'id': status.id_str,
                     'name': status.user.name,
                     'username': status.user.screen_name,
                     'text': status.text,
@@ -24,3 +25,15 @@ class TweetListener(tweepy.StreamListener):
                 print('salvo')
             except AttributeError:
                 pass
+
+    def get_tweets(self):
+        docs = self.db.collection('tweets').stream()
+
+        tweets = []
+
+        for doc in docs:
+            tt = doc.to_dict()
+            tt.setdefault('id', doc.id)
+            tweets.append(tt)
+
+        return tweets
