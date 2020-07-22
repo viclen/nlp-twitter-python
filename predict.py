@@ -6,6 +6,7 @@ from ktrain import text
 from TweetListener import TweetListener
 from sklearn.model_selection import train_test_split
 
+print("Preparing dataset")
 dataset = pd.read_csv("./data/imdb-reviews-pt-br.csv")
 
 X = dataset.drop('text_en', axis=1).rename(columns={"text_pt": "text"})
@@ -22,12 +23,15 @@ data_train, data_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     preprocess_mode='bert'
 )
 
+print("Creating model")
 model = text.text_classifier(
     name='bert',
     train_data=(X_train, y_train),
-    preproc=preprocess
+    preproc=preprocess,
+    verbose=0
 )
 
+print("Creating learner")
 learner = ktrain.get_learner(
     model=model,
     train_data=(X_train, y_train),
@@ -35,16 +39,18 @@ learner = ktrain.get_learner(
     batch_size=6
 )
 
+print("Loading saved model")
 learner.load_model('./drive/My Drive/NLP/ktrain/model')
 
-tweetListener = TweetListener()
-
+print("Creating predictor")
 predictor = ktrain.get_predictor(learner.model, preprocess)
 
+print("Fetching tweets")
+tweetListener = TweetListener()
 tweets = tweetListener.get_tweets()
-
 data = [tweet['text'] for tweet in tweets]
 
+print("Predicting")
 prediction = predictor.predict(data)
 
 print(prediction)
