@@ -21,7 +21,8 @@ data_train, data_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     val_df=data_test,
     maxlen=400,
     preprocess_mode='bert',
-    verbose=False
+    verbose=0,
+    lang='pt'
 )
 
 print("Creating model")
@@ -29,7 +30,7 @@ model = text.text_classifier(
     name='bert',
     train_data=(X_train, y_train),
     preproc=preprocess,
-    verbose=False
+    verbose=0
 )
 
 print("Creating learner")
@@ -37,16 +38,14 @@ learner = ktrain.get_learner(
     model=model,
     train_data=(X_train, y_train),
     val_data=(X_test, y_test),
-    batch_size=6,
-    verbose=False
+    batch_size=6
 )
 
 print("Loading saved model")
 learner.load_model('./drive/My Drive/NLP/ktrain/model')
 
 print("Creating predictor")
-predictor = ktrain.get_predictor(learner.model, preprocess,
-    verbose=False)
+predictor = ktrain.get_predictor(learner.model, preprocess)
 
 print("Fetching tweets")
 tweetListener = TweetListener()
@@ -54,7 +53,6 @@ tweets = tweetListener.get_tweets()
 data = [tweet['text'] for tweet in tweets]
 
 print("Predicting")
-prediction = predictor.predict(data,
-    verbose=False)
+prediction = predictor.predict(data)
 
 print(prediction)
