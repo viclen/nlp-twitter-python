@@ -61,9 +61,9 @@ def change(data):
     i = 0
     for prediction in predictions:
         if(prediction == "pos"):
-            requests.get(APP_URL + '/tweet/' + tweets[i]['id'] + '/approve/')
+            requests.get(APP_URL + '/tweet/' + str(tweets[i]['id']) + '/approve/')
         else:
-            requests.get(APP_URL + '/tweet/' + tweets[i]['id'] + '/reject/')
+            requests.get(APP_URL + '/tweet/' + str(tweets[i]['id']) + '/reject/')
 
         predicted.append(tweets[i]['id'])
 
