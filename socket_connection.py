@@ -24,7 +24,10 @@ def to_predict(tweets):
     l = []
     for tweet in tweets:
         if(tweet["id"] not in predicted):
-            l.append(remove_hashtags(tweet['text']))
+            l.append({
+                'id': tweet['id'],
+                'text': remove_hashtags(tweet['text'])
+            })
 
     return l
 
@@ -46,9 +49,11 @@ def disconnect():
 
 @sio.event
 def change(data):
+    print("predicting")
+
     tweets = to_predict(data["list"])
 
-    data = tweets
+    data = [tweet['text'] for tweet in tweets]
     predictions = model.predict(data)
 
     print(predictions)
