@@ -51,19 +51,24 @@ def disconnect():
 def change(data):
     print("predicting")
 
+    if(len(data["list"]) == 0):
+        return
+
     tweets = to_predict(data["list"])
 
     data = [tweet['text'] for tweet in tweets]
-    predictions = model.predict(data)
 
-    print(predictions)
+    if(len(data) > 0):
+        predictions = model.predict(data)
 
     i = 0
     for prediction in predictions:
         if(prediction == "pos"):
-            requests.get(APP_URL + '/tweet/' + str(tweets[i]['id']) + '/approve/')
+            requests.get(APP_URL + '/tweet/' +
+                         str(tweets[i]['id']) + '/approve/')
         else:
-            requests.get(APP_URL + '/tweet/' + str(tweets[i]['id']) + '/reject/')
+            requests.get(APP_URL + '/tweet/' +
+                         str(tweets[i]['id']) + '/reject/')
 
         predicted.append(tweets[i]['id'])
 
