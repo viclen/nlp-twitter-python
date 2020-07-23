@@ -7,7 +7,6 @@ from TweetListener import TweetListener
 from sklearn.model_selection import train_test_split
 
 def create():
-
     print("Preparing dataset")
     dataset = pd.read_csv("./data/imdb-reviews-pt-br.csv")
 

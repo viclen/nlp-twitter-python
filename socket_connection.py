@@ -14,8 +14,7 @@ def remove_hashtags(text):
     out = ""
     words = str(text).split(' ')
     for word in words:
-        if("#" not in word and "@" not in word):
-            out += word + " "
+        out += word + " "
 
     return out.strip()
 
@@ -26,7 +25,7 @@ def to_predict(tweets):
         if(tweet["id"] not in predicted):
             l.append({
                 'id': tweet['id'],
-                'text': remove_hashtags(tweet['text'])
+                'text': tweet['text']
             })
 
     return l
