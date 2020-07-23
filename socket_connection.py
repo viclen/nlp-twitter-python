@@ -51,6 +51,8 @@ def change(data):
     data = tweets
     predictions = model.predict(data)
 
+    print(predictions)
+
     i = 0
     for prediction in predictions:
         if(prediction == "pos"):
