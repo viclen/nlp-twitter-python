@@ -1,7 +1,13 @@
 import socketio
+import requests
 import predictor
 
+
+predicted = []
 model = predictor.create()
+APP_URL = 'https://twitter-watcher-backend.herokuapp.com'
+
+sio = socketio.Client()
 
 
 def remove_hashtags(text):
@@ -14,8 +20,13 @@ def remove_hashtags(text):
     return out.strip()
 
 
-# standard Python
-sio = socketio.Client()
+def to_predict(tweets):
+    l = []
+    for tweet in tweets:
+        if(tweet["id"] not in predicted):
+            l.append(remove_hashtags(tweet['text']))
+
+    return l
 
 
 @sio.event
@@ -35,12 +46,21 @@ def disconnect():
 
 @sio.event
 def change(data):
-    tweets = data["list"]
-    data = [remove_hashtags(tweet['text']) for tweet in tweets]
+    tweets = to_predict(data["list"])
+
+    data = tweets
     predictions = model.predict(data)
 
+    i = 0
     for prediction in predictions:
-        print(prediction)
+        if(prediction == "pos"):
+            requests.get(APP_URL + '/tweet/' + tweets[i]['id'] + '/approve/')
+        else:
+            requests.get(APP_URL + '/tweet/' + tweets[i]['id'] + '/reject/')
+
+        predicted.append(tweets[i]['id'])
+
+        i += 1
 
 
-sio.connect('https://twitter-watcher-backend.herokuapp.com/')
+sio.connect(APP_URL)
