@@ -2,3 +2,4 @@ requests
 tweepy
 python-dotenv
 firebase-admin
+python-socketio[client]
