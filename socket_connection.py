@@ -61,18 +61,18 @@ def change(data):
     if(len(data) > 0):
         predictions = model.predict(data)
 
-    i = 0
-    for prediction in predictions:
-        if(prediction == "pos"):
-            requests.get(APP_URL + '/tweet/' +
-                         str(tweets[i]['id']) + '/approve/')
-        else:
-            requests.get(APP_URL + '/tweet/' +
-                         str(tweets[i]['id']) + '/reject/')
+        i = 0
+        for prediction in predictions:
+            if(prediction == "pos"):
+                requests.get(APP_URL + '/tweet/' +
+                             str(tweets[i]['id']) + '/approve/')
+            elif(prediction == "neg"):
+                requests.get(APP_URL + '/tweet/' +
+                             str(tweets[i]['id']) + '/reject/')
 
-        predicted.append(tweets[i]['id'])
+            predicted.append(tweets[i]['id'])
 
-        i += 1
+            i += 1
 
 
 sio.connect(APP_URL)
