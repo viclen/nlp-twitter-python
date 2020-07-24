@@ -51,6 +51,7 @@ def change(data):
     print("predicting")
 
     if(len(data["list"]) == 0):
+        predicted = []
         return
 
     tweets = to_predict(data["list"])
