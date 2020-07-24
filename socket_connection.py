@@ -48,6 +48,8 @@ def disconnect():
 
 @sio.event
 def change(data):
+    global predicted
+    
     print("predicting")
 
     if(len(data["list"]) == 0):
