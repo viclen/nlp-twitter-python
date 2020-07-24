@@ -49,7 +49,7 @@ def disconnect():
 @sio.event
 def change(data):
     global predicted
-    
+
     print("predicting")
 
     if(len(data["list"]) == 0):
@@ -62,6 +62,8 @@ def change(data):
 
     if(len(data) > 0):
         predictions = model.predict(data)
+
+        print(predictions)
 
         i = 0
         for prediction in predictions:
