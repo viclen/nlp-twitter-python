@@ -58,11 +58,10 @@ def change(data):
 
     tweets = to_predict(data["list"])
 
-    data = [tweet['text'] for tweet in tweets]
+    predict_list = [str(tweet['text']) for tweet in tweets]
 
-    if(len(data) > 0):
-        predictions = model.predict(data)
-
+    if(len(predict_list) > 0):
+        predictions = model.predict(predict_list)
         print(predictions)
 
         i = 0

@@ -11,7 +11,7 @@ def create():
     print("Preparing dataset")
 
     dataset = pd.read_csv("./drive/My Drive/NLP/EN/dataset.csv",
-                          ",", encoding='ISO-8859-1')  # pd.concat(frames)
+                          ",", encoding='ISO-8859-1')
     dataset.columns = ['id', 'sentiment', 'text']
     dataset = dataset.drop(labels=['id'], axis=1)
 

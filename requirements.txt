@@ -3,6 +3,5 @@ tweepy
 python-dotenv
 firebase-admin
 python-socketio[client]
-tensorflow>=2.2
-keras
+tensorflow==2.1
 ktrain
