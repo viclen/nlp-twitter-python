@@ -15,10 +15,13 @@ def create():
     dataset.columns = ['id', 'sentiment', 'text']
     dataset = dataset.drop(labels=['id'], axis=1)
 
-    dataset.sentiment = dataset.sentiment.replace([0, 0.5, 1], ['neg', 'neu', 'pos'])
-    
-    data_train = dataset[(dataset.index>np.percentile(dataset.index, 0)) & (dataset.index<=np.percentile(dataset.index, 80))]
-    data_test = dataset[(dataset.index>np.percentile(dataset.index, 81)) & (dataset.index<=np.percentile(dataset.index, 100))]
+    dataset.sentiment = dataset.sentiment.replace(
+        [0, 0.5, 1], ['neg', 'neu', 'pos'])
+
+    data_train = dataset[(dataset.index > np.percentile(dataset.index, 0)) & (
+        dataset.index <= np.percentile(dataset.index, 50))]
+    data_test = dataset[(dataset.index > np.percentile(dataset.index, 81)) & (
+        dataset.index <= np.percentile(dataset.index, 100))]
 
     (X_train, y_train), (X_test, y_test), preprocess = text.texts_from_df(
         train_df=data_train,
@@ -28,7 +31,7 @@ def create():
         maxlen=400,
         preprocess_mode='bert',
         verbose=0,
-        lang='pt'
+        lang='en'
     )
 
     print("Creating model")

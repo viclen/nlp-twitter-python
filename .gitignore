@@ -1,7 +1,7 @@
 firebase-adminsdk.json
 env
 .env
-
 __pycache__
-
 drive
+.DS_Store
+tmp
