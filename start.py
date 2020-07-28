@@ -2,6 +2,8 @@ import os
 from os import system, name as so_name
 import requests
 import logging
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import threading
 
 # remove log from socket io
 logging.basicConfig(filename=os.devnull, filemode='w')
@@ -17,13 +19,16 @@ sio = socketio.Client(logger=False, engineio_logger=False)
 # create predictor
 predicted = []
 model = predictor.create()
+vader = SentimentIntensityAnalyzer()
+requests_to_make = []
 
 
 def remove_hashtags(text):
     out = ""
     words = str(text).split(' ')
     for word in words:
-        if("@" not in word and "https://" not in word and not ("&" in word and ";" in word)):
+        # and not ("&" in word and ";" in word):
+        if "@" not in word and "https://" not in word:
             out += word.replace('#', '') + " "
 
     return out.strip()
@@ -40,6 +45,13 @@ def to_predict(tweets):
             })
 
     return l
+
+
+def make_requests():
+    if(len(requests_to_make) > 0):
+        requests.get(requests_to_make.pop(0))
+
+    threading.Timer(1.0, make_requests).start()
 
 
 @sio.event
@@ -72,20 +84,36 @@ def change(data):
     if(len(predict_list) > 0):
         print("predicting")
 
+        scores = []
+        for text in predict_list:
+            score = vader.polarity_scores(text)
+
+            # score['pos'] > score['neg'] and score['pos'] > score['neu']:
+            if score['compound'] >= 0.05:
+                # positive
+                scores.append('pos')
+            elif score['compound'] <= -0.05:
+                # negative
+                scores.append('neg')
+            else:
+                scores.append('neu')
+
         predictions = model.predict(predict_list)
 
         i = 0
         for prediction in predictions:
-            print("{}:  {}".format(prediction, tweets[i]['text']))
+            print("{}, {}:  {}".format(
+                prediction, scores[i], tweets[i]['text']))
 
-            if(prediction == "pos"):
-                requests.get(APP_URL + '/tweet/' +
-                             str(tweets[i]['id']) + '/approve/')
-            elif(prediction == "neg"):
-                requests.get(APP_URL + '/tweet/' +
-                             str(tweets[i]['id']) + '/reject/')
+            if prediction == "pos" and scores[i] != "neg":
+                requests_to_make.append(APP_URL + '/tweet/' +
+                                        str(tweets[i]['id']) + '/approve/')
+            else:
+                requests_to_make.append(APP_URL + '/tweet/' +
+                                        str(tweets[i]['id']) + '/reject/')
 
             i += 1
 
 
+make_requests()
 sio.connect(APP_URL)
