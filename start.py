@@ -23,6 +23,12 @@ vader = SentimentIntensityAnalyzer()
 requests_to_make = []
 
 
+def log(text):
+    file = open('log.txt', 'a')
+    file.write(text)
+    file.close()
+
+
 def remove_hashtags(text):
     out = ""
     words = str(text).split(' ')
@@ -48,25 +54,29 @@ def to_predict(tweets):
 
 
 def make_requests():
+    threading.Timer(1.0, make_requests).start()
+
+    # os.system('clear')
+    # print('requests: {}'.format(requests_to_make))
+
     if(len(requests_to_make) > 0):
         requests.get(requests_to_make.pop(0))
-
-    threading.Timer(1.0, make_requests).start()
 
 
 @sio.event
 def connect():
-    print("Connected!\n")
+    log("Connected!\n")
 
 
 @sio.event
-def connect_error():
+def connect_error(err):
+    log(err)
     pass
 
 
 @sio.event
 def disconnect():
-    print("Disconnected")
+    log("Disconnected")
 
 
 @sio.event
@@ -102,7 +112,7 @@ def change(data):
 
         i = 0
         for prediction in predictions:
-            print("{}, {}:  {}".format(
+            log("{}, {}:  {}".format(
                 prediction, scores[i], tweets[i]['text']))
 
             if prediction == "pos" and scores[i] != "neg":

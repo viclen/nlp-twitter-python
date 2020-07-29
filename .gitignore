@@ -5,3 +5,4 @@ __pycache__
 drive
 .DS_Store
 tmp
+log.txt
